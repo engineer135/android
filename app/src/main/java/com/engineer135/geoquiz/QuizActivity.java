@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
+    private static final String KEY_INDEX = "index"; // 번들 객체에 저장될 키와 값 쌍에서 키가 될 값을 상수로 추가
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -50,6 +51,11 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 번들 객체에 저장해둔 값이 있다면 그 값으로 변경!
+        if(savedInstanceState != null){
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
 
         // 로그 추가
         Log.d(TAG, "onCreate(Bundle) called");
@@ -105,6 +111,14 @@ public class QuizActivity extends AppCompatActivity {
         });
 
         updateQuestion();
+    }
+
+    // 화면 전환시 현재 값을 저장해두려면 onSaveInstanceState 메소드를 호출해야한다.
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
 
     @Override
