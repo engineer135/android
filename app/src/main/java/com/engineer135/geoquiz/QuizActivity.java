@@ -23,6 +23,9 @@ public class QuizActivity extends AppCompatActivity {
     // 치트 버튼 추가
     private Button mCheatButton;
 
+    // 치트 여부
+    private boolean mIsCheater;
+
     private TrueFalse[] mQuestionBank = new TrueFalse[] {
             new TrueFalse(R.string.question_oceans, true),
             new TrueFalse(R.string.question_mideast, false),
@@ -43,10 +46,15 @@ public class QuizActivity extends AppCompatActivity {
 
         int messageResId = 0;
 
-        if(userPressedTrue == answerIsTrue){
-            messageResId = R.string.correct_toast;
+        // 커닝한 경우 추가
+        if(mIsCheater){
+            messageResId = R.string.judgment_toast;
         }else{
-            messageResId = R.string.incorrect_toast;
+            if(userPressedTrue == answerIsTrue){
+                messageResId = R.string.correct_toast;
+            }else{
+                messageResId = R.string.incorrect_toast;
+            }
         }
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
@@ -91,10 +99,12 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
+        // 다음 질문으로 가기
         mNextButton = (Button)findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -109,7 +119,7 @@ public class QuizActivity extends AppCompatActivity {
                 }else{
                     mCurrentIndex = (mCurrentIndex - 1);
                 }
-
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -127,7 +137,10 @@ public class QuizActivity extends AppCompatActivity {
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
                 i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, answerIsTrue);
 
-                startActivity(i);
+                //startActivity(i);
+
+                //자식 액티비티로부터 데이터를 돌려받고 싶을땐 startActivity가 아닌
+                startActivityForResult(i, 0);
             }
         });
 
@@ -140,6 +153,15 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+    }
+
+    // 자식 액티비티에서 부모 액티비티로 돌아오면 자식이 준 데이터를 확인하는 메소드를 호출한다.
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        Log.d(TAG, "부모창으로 돌아왔으므로 데이터 확인");
+        if(data == null){
+            return;
+        }
+        mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
     }
 
     @Override
