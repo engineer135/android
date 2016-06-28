@@ -1,5 +1,6 @@
 package com.engineer135.geoquiz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,6 +19,9 @@ public class QuizActivity extends AppCompatActivity {
     private Button mNextButton;
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
+
+    // 치트 버튼 추가
+    private Button mCheatButton;
 
     private TrueFalse[] mQuestionBank = new TrueFalse[] {
             new TrueFalse(R.string.question_oceans, true),
@@ -107,6 +111,23 @@ public class QuizActivity extends AppCompatActivity {
                 }
 
                 updateQuestion();
+            }
+        });
+
+        // 치트 버튼 리스너 추가
+        mCheatButton = (Button)findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                //치트 액티비티를 시작시켜야 한다.
+
+                // 1단계. 명시적 인텐트(같은 어플리케이션의 다른 액티비티 호출할때 사용)
+                Intent i = new Intent(QuizActivity.this, CheatActivity.class);
+
+                // 인텐트 엑스트라를 이용해 값을 전달한다.
+                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
+                i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+
+                startActivity(i);
             }
         });
 

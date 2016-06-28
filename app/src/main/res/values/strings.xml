@@ -15,6 +15,11 @@
     <string name="question_americas">아마존강은 아메리카 대륙에서 가장 긴 강이다.</string>
     <string name="question_asia">나는 멋있다.</string>
 
+    <string name="cheat_button">커닝하기!</string>
+    <string name="warning_text">자네, 정말로 답을 볼것인가...!?</string>
+    <string name="show_answer_button">정답 보기</string>
+    <string name="judgment_toast">커닝은 나빠요.</string>
+
 
     <string name="menu_settings">Settings</string>
 
